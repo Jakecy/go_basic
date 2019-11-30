@@ -34,6 +34,14 @@ func varMutipleVarDeclaration() {
 	fmt.Println("姓名: " + name + ",性别: " + gender)
 }
 
+func varDeclarationShortHand() {
+	//快捷方式
+	a, b := 3, 2
+	fmt.Println("快捷方式声明变量")
+	fmt.Println(a)
+	fmt.Println(b)
+}
+
 func main() {
-	varMutipleVarDeclaration()
+	varDeclarationShortHand()
 }
