@@ -20,8 +20,14 @@ func variableFuncV3() {
 	fmt.Println(" 身高是:  ", height)
 }
 
+func varTypeInfer() {
+	var weight = 120
+	fmt.Println("体重是: ", weight)
+}
+
 func main() {
 	variableFuncV1()
 	variableFuncV2()
 	variableFuncV3()
+	varTypeInfer()
 }
