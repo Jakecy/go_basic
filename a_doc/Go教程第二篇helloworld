@@ -1,0 +1,126 @@
+# hello world
+
+这篇文章是我们的《Golang系列教程》的第二篇文章，如果要了解和安装GO请查看第一篇文章。
+
+
+学习编程语言最好的方法就是多多编码，经常练习。来，跟我们一起写第一个Go程序吧。
+
+我个人比较推荐使用Visual Studio Code作为Go语言的开发IDE.它能够自动补全，代码格式化，
+以及其他特性。
+
+
+## 设置工作空间
+
+在写代码之前，我们要先设置工作空间。
+
+如果是Mac或Linux系统的话，工作空间应该位于$HOME/go。因此，我们需要现在$HOME目录下，创建一个
+go目录。
+
+
+如果是Windows系统的话，工作空间应该位于C:\Users\YourName\go，故而我们需要在C:\Users\YourName\HOME目录下
+创建一个Go目录。
+
+
+通过设置GOPATH环境变量，我们可以使用不同的目录作为工作空间。但是就目前来说，我们先简单地使用上面的路径作为工作空间。
+
+
+go的所有源代码文件都必须放置在工作空间的src目录下，因此，需要现在上面工作空间的目录下创建一个src目录。
+
+每一个go项目都应该有它自己的src子目录，我们现在src目录下创建一个hello目录用于放置我们的hello world项目。
+
+
+在创建完上面所说的那些目录之后，我们的目录结构应该和下面的类似：
+```
+go
+  src
+    hello
+
+```
+把下面的项目保存为helloworld.go。
+```
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello World")
+}
+```
+在创建完上面的程序之后，我们的目录结构应该长这么样子：
+```
+go
+  src
+    hello
+        helloworld.go
+```
+
+
+## 运行程序
+
+ 有很多不同的方式来运行go程序，我们先一个个看看。
+
+
+  * 1) 使用 go run 命令 -在命令行提示符下，键入 go run workspacepath/src/hello/helloworld.go
+       上面的命令中的workspacepath，如果是window，需要使用C:/Users/YourName/go 进行替换。
+       如果是Mac或Linux系统的话，需要使用 $HOME/go。
+
+     这时，你应该能在控制台中看到 >hello world 的输出。
+
+  * 2) 使用go install 命令 -在workspace/bin/hello 下运行 go install hello 命令即可运行这个项目。
+
+    上面命令中的workspacepath需要使用 你工作空间来替换(如果是window，用C:/Users/YourName/go替换，
+    如果是Mac或Linux系统的话，就用$HOME/go替换)。在命令行里面你可以看到hello world的输出。
+
+
+   当你键入 go install hello命令时，go工具会在工作空间中搜索hello 包。之后，它会创建一个名为hello的二进制文件，
+   这个二进制文件会放置到工作空间里面。运行完go install hello命令后，目录结构如下：
+
+   ```
+   go
+      bin
+        hello
+      src
+        hello
+            helloworld.go
+   ```
+
+* 3) 运行这个程序的第三种比较酷的方式是使用go playground。虽然它有一些限制，但是却比较方便。
+     我之前为Hello world项目创建了一个playground。[点击此处](https://play.golang.org/p/VtXafkQHYe)，可以在线运行程序.
+
+
+## 简要解释一下这个Hello world程序
+
+ 这就是我们刚才写的hello world程序：
+ ```
+ package main //1
+
+import "fmt" //2
+
+func main() { //3
+   fmt.Println("Hello World") //4
+}
+ ```
+我们先看一下这个程序都做了什么工作，在接下来的教程中，我们会针对每个部分进行深入讲解。
+
+  * package main
+     每个go文件的开头必须有 package  name 这个声明。包可以方便代码的管理，让不同源代码文件的更好的区分隔离，同时也提供了
+     很好的复用性。 这里使用到的包名是 main。
+
+  * import "fmt"
+     这行的作用是引入fmt包，我们使用它在main函数的内部向标准输出中打印文本。
+  * func main()
+     main是一个特殊的函数，程序的执行都是从main函数开始。main函数要写在main 包下。
+     {和}标识着main函数的开始和结束。
+
+  * fmt.Println("Hello World")
+     fmt包下的Println函数可用于向标准输出中写入文本。
+
+
+  [代码的GitHub地址](https://github.com/golangbot/hello)
+
+
+下一篇文章，我们将讲解《Golang 系列教程》第三节: 变量，学习一下在Golang里面怎么使用变量。
+
+
+***备注***
+ [翻译自](https://golangbot.com/hello-world/)
