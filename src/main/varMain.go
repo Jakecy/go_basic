@@ -25,9 +25,15 @@ func varTypeInfer() {
 	fmt.Println("体重是: ", weight)
 }
 
+//多变量声明
+
+func varMutipleVarDeclaration() {
+	//语法如下：
+	//var name1, name2 type = initialvalue1,initialvalue2
+	var name, gender string = "chilaoban", "nan"
+	fmt.Println("姓名: " + name + ",性别: " + gender)
+}
+
 func main() {
-	variableFuncV1()
-	variableFuncV2()
-	variableFuncV3()
-	varTypeInfer()
+	varMutipleVarDeclaration()
 }
