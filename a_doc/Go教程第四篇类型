@@ -1,0 +1,361 @@
+# 第四篇：数据类型
+
+这篇文章是我们的《Golang系列教程》的第四篇文章。
+下面是Go语言中的基本数据类型:
+
+  * bool
+  * Numberic Types
+     * int8, int16,int32,int64,int
+     * uint8,uint16,uint64,uint
+     * float32,float64
+     * complex64,complex128
+     * byte
+     * rune
+
+
+## bool
+ 布尔类型代表了一个布尔值，它要么是true要么是false。
+
+
+ ```
+ package main
+
+import "fmt"
+
+func main() {
+   a := true
+   b := false
+   fmt.Println("a:", a, "b:", b)
+   c := a && b
+   fmt.Println("c:", c)
+   d := a || b
+   fmt.Println("d:", d)
+}
+
+ ```
+在上面的程序中，a被赋予true值，b被赋予false值。c被赋予a&&b。&&操作符只有当a和b都为true的情况下才返回
+true。因此，在本例子中，c的值是false。
+
+
+|| 操作符只要a和b中有一个是true，它就返回true。在本例中，d的值是true因为a为true。
+我们将得到如下输出：
+
+```
+a: true b: false
+c: false
+d: true
+
+```
+
+
+## 有符号整数型
+
+ * int8 :代表8为有符号整数
+ * 大小 : 8位
+ * 范围 : -125到127
+
+
+ * int8 :代表8为有符号整数
+ * 大小 : 8位
+ * 范围 : -125到127
+
+ * int16 :代表16为有符号整数
+ * 大小 : 16位
+ * 范围 : -32768到32767
+
+
+ * int32 :代表32为有符号整数
+ * 大小 : 8位
+ * 范围 : -2147483648到2147483647
+
+
+ * int64 :代表64为有符号整数
+ * 大小 : 64位
+ * 范围 : -9223372036854775808 到9223372036854775807
+
+
+ * int :
+    int 代表32或64位整数，具体取决于底层的平台。通常你只需要使用int来表示一个整数值即可。
+    除非在某些情况下，你要指定位数。
+ * 大小 :在32位系统上是32位，在64位系统上是64位。
+ * 范围 :
+       在32位系统上是-2147483648 to 2147483647
+       在64位系统上是-9223372036854775808 to 9223372036854775807
+
+
+```
+package main
+
+import "fmt"
+
+func main() {
+    var a int = 89
+    b := 95
+    fmt.Println("value of a is", a, "and b is", b)
+}
+
+```
+上面的程序将输出: value of a is 89 and b is 95
+
+在上面的程序中，a是一个int类型，b的类型是根据它的初始值推断出来的。正如我们上面所说的那样，
+int的大小在32位系统上是32位，在64位系统上是64位。我们来验证一下。
+
+
+变量的类型可以在Printf函数里面使用%T格式化分隔符打印出来。使用Go下面的unsafe包，我们可以使用Sizeof功能
+来计算变量的字节数。使用unsafe包可能有性能问题，但是就本文教程来说，我们可以使用它。
+
+
+下面的程序会输出变量a和b的数据类型和内存大小：
+
+```
+package main
+
+import (
+    "fmt"
+    "unsafe"
+)
+
+func main() {
+    var a int = 89
+    b := 95
+    fmt.Println("value of a is", a, "and b is", b)
+    fmt.Printf("type of a is %T, size of a is %d", a, unsafe.Sizeof(a)) //type and size of a
+    fmt.Printf("\ntype of b is %T, size of b is %d", b, unsafe.Sizeof(b)) //type and size of b
+}
+
+```
+
+上面的程序将会产生如下输出：
+
+```
+value of a is 89 and b is 95
+type of a is int, size of a is 4
+type of b is int, size of b is 4
+
+```
+
+我们可以从上面的输出中推断出来，a和b的类型是int并且他们是32位(4字节)。
+如果在64位系统上运行，结果将会有所不同。在一个64位系统上，a和b占据着64位(8字节)。
+
+
+
+## 无符号型整数
+
+* uint8: 表示8位无符号整数
+* 大小: 0 to 255
+
+* uint16: 表示16位无符号整数
+* 大小: 16 bits
+* 范围: 0 to 65535
+
+* uint32:表示32位无符号整数
+* 大小: 32 位
+* 范围: 0 to 4294967295
+
+* uint64: 表示64位无符号整数
+* 大小: 64 位
+* 范围: 0 to 18446744073709551615
+
+* uint : 表示32位或64位无符号整数(取决于底层的平台的位数)
+* 大小 : 32 位或64位
+* 范围 :在32位系统上是 0 到 4294967295
+        在64位系统上是  0 到 18446744073709551615
+
+* 浮点型
+* float32: 32位浮点型数字
+* float64: 64位浮点型数字
+
+
+下面这个简单的程序将展示整型和浮点类型：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    a, b := 5.67, 8.97
+    fmt.Printf("type of a %T b %T\n", a, b)
+    sum := a + b
+    diff := a - b
+    fmt.Println("sum", sum, "diff", diff)
+
+    no1, no2 := 56, 89
+    fmt.Println("sum", no1+no2, "diff", no1-no2)
+}
+
+```
+a和b的值可以根据赋值给他们的值来推断出来。在本例中，a和b是float64(浮点值的默认类型是float64)。
+我们使a和b相加，并且把结果赋值给变量sum。同时，使a减去b，然后把差值赋值给diff变量。
+最后把sum和diff打印出来。类似的计算，我们使用no1和no2也进行一次。上面的程序将会打印:
+
+```
+type of a float64 b float64
+sum 14.64 diff -3.3000000000000007
+sum 145 diff -33
+
+```
+
+## 复杂类型
+
+ * complex64 : 这是有着一个float32位实数和float32位虚数的复杂类型的数字
+
+ * complex128 : 这是有着一个float64位实数和float64位虚数的复杂类型的数字
+
+
+ 使用内置函数 complex可以构造一个有着实数和虚数部分的复杂类型数字。complex函数的定义如下：
+
+ ```
+func complex(r, i FloatType) ComplexType
+
+ ```
+
+ 这个函数接收俩个float类型的参数，分别是实数部分和虚数部分，然后返回一个complex类型的数字。
+ 需要注意的是： 实数部分和虚数部分都必须要么全是float32,要么全是float64。如果实数部分和虚数部分
+ 都是float32,则 该函数返回的是complex64位的数字。如果实数部分和虚数部分都是float64，那么该函数返回的是
+ complex128位的数字。
+
+复杂类型的数字也可以使用如下的快捷语法创建:
+
+```
+c := 6 + 7i
+```
+
+我们来写一个简单的程序理解一下复杂数值类型：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    c1 := complex(5, 7)
+    c2 := 8 + 27i
+    cadd := c1 + c2
+    fmt.Println("sum:", cadd)
+    cmul := c1 * c2
+    fmt.Println("product:", cmul)
+}
+```
+在上面的程序中，c1和c2是俩个复杂数值类型。c1的实数部分是5，虚数部分是7。c2的实数部分是8，虚数部分是27。
+把c1和c2的和赋值给cadd变量。c1和c2的乘积复制给cmul变量。该程序将输出如下：
+
+```
+sum: (13+34i)
+product: (-149+191i)
+
+```
+
+## 其他数值类型
+
+ * byte 是uint8的别名
+
+ * rune 是int32的别名
+
+ 我们将在学习字符串的时候，再对byte和rune进行详细说明。
+
+
+
+
+## string 类型
+
+ 在Golang里，字符串是一系列字节的集合。好吧，你或许觉得这个定义毫无意义。
+ 现在，我们先假设 一个字符串是一个系列字符的集合。在单独的章节中的我们会再学习
+ string的细节。
+
+ ```
+ package main
+
+ import (
+     "fmt"
+ )
+
+ func main() {
+     first := "Naveen"
+     last := "Ramanathan"
+     name := first +" "+ last
+     fmt.Println("My name is",name)
+ }
+
+ ```
+
+在上面的程序中，first被赋值于"Naveen"。last被赋值于"Ramanathan"。string可以使用+号进行连接。
+firt拼接一个空格符然后在拼接last之后被赋值给name。上面的程序将会打印如下:name is Naveen Ramanathan
+
+
+## 类型转换
+
+Go对于类型的要求是非常严格和明确的，它不会自动地进行类型升级或类型转换。我们将用一个例子说明：
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    i := 55      //int
+    j := 67.8    //float64
+    sum := i + j //int + float64 not allowed
+    fmt.Println(sum)
+}
+```
+在C语言里面，上面的代码是合法的。但是在go里面，这样是不行的。i是一个int类型，j是一个float64类型。
+试图对俩个不同类型的数字进行加法运算是不允许的。当你运行程序时，你能看到：
+
+>main.go:10: invalid operation: i + j (mismatched types int and float64)
+
+要想修复这个问题，i和j就得是同一种数据类型。我们可以把j转换成int。类型转换的语法是: T(v)，此时 就会把一个值v转换成
+类型T。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    i := 55      //int
+    j := 67.8    //float64
+    sum := i + int(j) //j is converted to int
+    fmt.Println(sum)
+}
+```
+现在，当你运行上面的程序时，你会看到会输出122。
+
+在赋值时的类型转换也是同样。把某个类型的变量赋值给另一个类型的变量时，必须要进行明确的类型转换。
+接下来的程序将会解释这一点：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    i := 10
+    var j float64 = float64(i) //this statement will not work without explicit conversion
+    fmt.Println("j", j)
+}
+
+```
+
+在第九行，i先是被转换成float64，然后被赋值给j。如果你试图在没有进行类型转换的情况下，把i赋值给j的话，编译器将会
+抛出一个错误。
+
+
+
+## 致谢
+感谢您百忙之中阅读本文。如果有任何反馈和问题，请您在评论区留言。
+
+
+
+***备注***
+
+ 本文系翻译之作[原文博客地址](https://golangbot.com/types/)
