@@ -1,0 +1,239 @@
+# Go教程第五篇:常量
+
+本文是《Go系列教程》的第五篇
+
+
+## 定义
+
+Go里面的常量术语是用于表示固定值，例如: 5，-89,"I love  Go"，67.89 等等。
+
+思考一下下面的代码：
+
+```
+var a int = 50
+var b string = "I love Go"
+
+```
+
+在上面的代码中，各自给a和b赋予常量值： 50和"I love Go"。
+关键字 const用于表明常量值，如： 50和"I love Go"。即使在上面的代码中没有明确地使用const
+关键字，在Go内部它们也是常量。
+
+
+常量的值不能更改，因此 下面的程序无法运行，它会报编译期错误： cannot  assign to a 。
+
+```
+package main
+
+func main() {
+    const a = 55 //allowed
+    a = 89 //reassignment not allowed
+}
+
+```
+
+常量的值在编译期都是可知的。因此，函数的返回值不能被赋予一个常量，因为函数调用只有在运行时期才发生。
+
+package main
+
+import (
+    "fmt"
+    "math"
+)
+
+func main() {
+    fmt.Println("Hello, playground")
+    var a = math.Sqrt(4)//allowed
+    const b = math.Sqrt(4)//not allowed
+}
+```
+
+在上面的程序中，a 是一个变量，因此可以把一个函数math.Sqrt(4)的返回值赋值给他。而 b是一个常量
+所以b的值在编译期必须是可知的。函数math.Sqrt(4)只有在运行期才能计算出来。因此 const b=math.Sqrt(4)
+会抛出一个错误: error main.go:II: const initializer math.Sqrt(4) is not a constant。
+
+
+## 字符串常量
+
+ 对Go来说，任何由双引号""包裹的值都是一个字符串常量。例如，"Hello World"或 "Sam"在Go里面 都是常量。
+那么，究竟一个字符串常量属于什么类型呢？他们都是：untyped。
+
+ 字符串常量比如"Hello World"没有任何数据类型。
+
+ > const hello="hello world"
+
+ 在上面的代码中，我们把"hello  world" 赋值给一个命名的常量hello。那么现在这个常量hello有数据类型吗？
+ 答案是： 没有。常量仍然没有数据类型。
+
+ Go是一个强类型的语言。所有的变量都需要一个明确的数据类型。那么为什么下面的程序就可以给变量name分配一个无类型的常量
+ Samne ???
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    var name = "Sam"
+    fmt.Printf("type %T value %v", name, name)
+
+}
+
+```
+原因是： 无类型常量都有一个和他们相关联的默认数据类型，它会在而且仅仅会在某行代码需要它的时候被应用。在语句： var  name="Same"
+中，name需要一个数据类型，那么这时它就取字符串常量的默认数据类型，对于"Sam"来说，也就是：string。
+
+那么有没有什么办法创建一个类型常量呢？？，答案是有的。下面的代码会创建一个类型常量。
+
+```
+const typedhello string = "Hello World"
+
+```
+上述代码中的typedhello就是一个字符串类型的常量。
+
+Go 是一个强类型的语言，在赋值时不允许混合类型。我们通过下面的例子来看一下：
+
+```
+package main
+
+func main() {
+        var defaultName = "Sam" //allowed
+        type myString string
+        var customName myString = "Sam" //allowed
+        customName = defaultName //not allowed
+
+}
+
+```
+在上面的代码中，我们首先创建了一个变量defaultName，并且给他分配一个常量Sam。常量Sam的默认数据类型是string。
+因此在分配之后，defaultNamede的变量类型也是string。
+
+在紧接着的下面一行，我们创建了一个新的类型：myString，它是string的别名。之后，我们创建了一个myString类型的变量customName.
+并把常量Sam赋值给他。因为常量Sam属于无类型的，所以它可以被赋值给任何string类型的变量。故而，赋值是合法的，
+并且customName的类型依然是myString。
+
+到目前为止，我们有一个string类型的变量 defaultName 和 另一个myString类型的变量 customName。即使我们知道myString只是string的
+别名而已，Go的强类型约束仍然不会允许一个类型变量变量被赋值给另一个类型的变量。因此，customName = defaultName 是不合法的，
+编译器会抛出：error main.go:7:20: cannot use defaultName (type string) as type myString in assignment错误。
+
+
+
+
+
+## 布尔常量
+
+  布尔常量不同于字符串常量，他们是俩个无类型的常量： true和false。string常量的规则同样适用于布尔常量，我们就不再赘述。
+  下面这个简单的例子就是对布尔常量的解释：
+
+  ```
+  package main
+
+  func main() {
+      const trueConst = true
+      type myBool bool
+      var defaultBool = trueConst //allowed
+      var customBool myBool = trueConst //allowed
+      defaultBool = customBool //not allowed
+  }
+
+  ```
+
+
+
+ ## 数字常量
+
+数字常量包括： 整型、浮点型和复杂类型。他们有一些细微的差别。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    const a = 5
+    var intVar int = a
+    var int32Var int32 = a
+    var float64Var float64 = a
+    var complex64Var complex64 = a
+    fmt.Println("intVar",intVar, "\nint32Var", int32Var, "\nfloat64Var", float64Var, "\ncomplex64Var",complex64Var)
+}
+
+```
+在上面的程序中，常量a是一个无类型的，值是5。你可能会想a的默认类型是什么，如果a有默认类型的话，为何我们可以把它赋值给另一个不同类型的变量。
+答案就在a的语法中。下面的程序会更清晰地说明这个问题。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    var i = 5
+    var f = 5.6
+    var c = 5 + 6i
+    fmt.Printf("i's type %T, f's type %T, c's type %T", i, f, c)
+
+}
+
+```
+在上面的程序中，每一个变量的类型都由数字常量的语法所决定。语法是的5是一个整型，5.6是一个浮点型，5+6i是一个复杂数字类型。
+当运行上述程序的时候，会输出：i's type int, f's type float64, c's type complex128 。
+
+我们希望下面的程序的运行原理会更加清楚：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    const a = 5
+    var intVar int = a
+    var int32Var int32 = a
+    var float64Var float64 = a
+    var complex64Var complex64 = a
+    fmt.Println("intVar",intVar, "\nint32Var", int32Var, "\nfloat64Var", float64Var, "\ncomplex64Var",complex64Var)
+}
+
+```
+在这个程序中，a的值是5,并且a的语法是通用的(它可以代表ie浮点型、整型、甚至一个没有虚数部分的复杂数据类型)。因此，
+它可以被赋值给任何兼容的数据类型。你可以认为这些常量的默认数据类型都是由上下文决定的。
+var intVar int = a 需要a是一个int类型，所以它就变成了一个int常量。var complex64Var complex64 = a需要a是一个复杂数字类型，因此
+它就变成了一个复杂数字常量。非常的灵巧。
+
+
+
+## 数字表达式
+
+ 在表达式中数字常量可以自由地混杂和匹配。只有在代码中要求有类型的时候，数字常量的类型才是必需的。
+
+ ```
+ package main
+
+ import (
+     "fmt"
+ )
+
+ func main() {
+     var a = 5.9/8
+     fmt.Printf("a's type %T value %v",a, a)
+ }
+
+ ```
+上面的程序中，语法使得5.9是一个浮点型，8是一个整型。5.9/8作为数字常量可以是浮点型和整型。除的结果是：0.7375，这是一个
+float。因此，变量a是一个浮点型。程序的输出就是：a's type float64 value 0.7375.
+
+## 致谢
+感谢您百忙之中阅读本文。如果有任何反馈和问题，请您在评论区留言。
+
+***备注***
+
+ 本文系翻译之作[原文博客地址](https://golangbot.com/constants/)
