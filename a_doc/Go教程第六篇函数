@@ -1,0 +1,162 @@
+# Go教程第五篇:常量
+
+本文是《Go系列教程》的第六篇文章。
+
+
+## 什么是函数？
+ 函数是执行指定任务的代码块。接收输入，对输入执行运算，生成输出结果。
+
+## 函数声明
+   在go里面，通常声明函数的语法是：
+
+   ```
+   func functionname(parametername type) returntype {
+       //function body
+    }
+   ```
+函数声明以一个func关键字开始，后面紧跟着是函数名。然后在(和)之间指定参数，最后是函数的返回值类型。
+指定函数参数的语法是： 参数名  类型。不管几个参数都可以这样指定：(parameter1 type,parameter2 type)
+之后，由{和}包裹的代码块就是函数体。
+
+对于函数来说，参数和返回值类型都是可选的。因此，下面的语法也是一个有效的函数声明。
+
+```
+func functionname() {
+}
+```
+## 简单函数
+  我们来一起写个接收商品单价和商品数量作为参数，并计算出总数额的函数。
+
+```
+func calculateBill(price int, no int) int {
+    var totalPrice = price * no
+    return totalPrice
+}
+```
+上面的函数有俩个int类型的输入参数：price和no,并返回总价格totalprice。返回值的类型也是int。
+
+如果连续几个参数都是同一种数据类型的话，我们可以不必每次都写类型，我们只需要在最后的参数后面写一次就行了。
+ie: price int , no  int 可以改写成： price,no int。所以，上面的函数也可以这样写：
+```
+func calculateBill(price, no int) int {
+    var totalPrice = price * no
+    return totalPrice
+}
+```
+既然我们已经写好了一个函数，那我们就在代码里面调用它吧。调用函数的语法是：functionname(parameters)。上面的函数
+可以使用下面的代码进行调用：
+
+```
+calculateBill(10, 5)
+
+```
+
+这里有一个完整的程序，使用上面的函数并且打印出总价格。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func calculateBill(price, no int) int {
+    var totalPrice = price * no
+    return totalPrice
+}
+func main() {
+    price, no := 90, 6
+    totalPrice := calculateBill(price, no)
+    fmt.Println("Total price is", totalPrice)
+}
+
+```
+上面的程序会输出如下：
+
+```
+Total price is 540
+
+```
+
+## 多返回值
+ 函数可以返回多个值。现在我们写一个函数rectProps,这个函数会接收一个矩形的长度和宽度，
+ 然后返回面积和周长。面积是矩形长和宽的乘积，周长是长和宽的和的二倍。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func rectProps(length, width float64)(float64, float64) {
+    var area = length * width
+    var perimeter = (length + width) * 2
+    return area, perimeter
+}
+
+func main() {
+     area, perimeter := rectProps(10.8, 5.6)
+    fmt.Printf("Area %f Perimeter %f", area, perimeter)
+}
+
+```
+如果一个函数需要返回多个值的话，那么这些返回值一定要使用(和)指定。ie:func rectProps(length, width float64)(float64, float64)
+函数rectProps接收了俩个float64类型的参数，同时返回了俩个float64的值。上面的程序会输出如下：
+
+> Area 60.480000 Perimeter 32.800000
+
+## 命名返回值
+ 函数也能返回命名值。如果返回值是命名的，那么你可以在函数的第一行像变量一样对它进行声明。
+ 上面的rectProps函数可以使用命名返回值进行重写：
+
+ ```
+ func rectProps(length, width float64)(area, perimeter float64) {
+     area = length * width
+     perimeter = (length + width) * 2
+     return //no explicit return value
+ }
+
+ ```
+area和perimeter是命名返回值。注意： 上面函数中的返回语句并没有明确地返回任何值。
+因为 area和perimeter在函数的声明处，已经作为返回值进行声明了，所以当执行到return语句时，
+他们会自动地从函数中返回。
+
+
+## 空格标识符
+
+_ 在Go里面被认为是空格标识符。它可以被用于任何类型的值里面。
+
+rectProps函数返回了矩形的面积和周长。如果我们只需要面积area，而不需要周长perimeter
+的话，这时候_就派上用场了。
+
+下面的程序只从rectProps函数中返回面积area。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func rectProps(length, width float64) (float64, float64) {
+    var area = length * width
+    var perimeter = (length + width) * 2
+    return area, perimeter
+}
+func main() {
+    area, _ := rectProps(10.8, 5.6) // perimeter is discarded
+    fmt.Printf("Area %f ", area)
+}
+
+```
+在13行，我们仅仅需要面积area的值，所以我们使用area来接收参数，同时使用"_"来丢弃另一个参数。
+
+
+## 致谢
+感谢您百忙之中阅读本文。如果有任何反馈和问题，请您在评论区留言。
+
+
+***备注***
+
+ 本文系翻译之作[原文博客地址](https://golangbot.com/functions/)

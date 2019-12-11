@@ -1,0 +1,366 @@
+# Go教程第七篇:Package
+
+本文是《Go系列教程》的第七篇文章。
+
+
+## 什么是包、为什么使用包 ?
+ 到目前为止，我们看到的Go程序都是只有一个文件，该文件里面有着一个main函数和几组其他函数。
+ 在现实的场景中，把所有的代码都写在一个文件中是行不通的。无法复用和维护代码。这时就要体现package作用了。
+
+ 包使得Go源码组织的复用性更高和可读性更好。包让代码实现了划分，也因此使Go应用的维护变得更容易。
+
+ 例如，我们正在开发一个Go图像处理程序，它能够提供 图像复制、图像强化、模糊、色调强化等特性。组织该应用的方式之一
+ 就是把和某一特性相关的代码都放到一个包里面。比如，图像复制就可以单独放置到一个包里面，图像强化放到另一个包。
+ 这样做的好处就是，色调强化的代码可能需要图像强化中的一些功能。那么这时，色调强化代码就可以通过引用图像强化包使用
+ 某些函数。这样的话，代码就变得更加可复用了。
+
+ 我们将一步一步地创建一个计算矩形面积和对角线的程序。通过这个程序，我们可以更好地理解包的含义。
+
+
+
+## main函数和main包
+
+ 每一个可执行的go程序都必须包含一个main函数。这个函数是程序运行的入口点。main函数应该驻留于main包里面。
+
+ > package  packagename
+ 这行代码指定了某个特定的源文件从属于哪个包。它位于每个go文件的第一行。
+
+ 我们来为我们的应用创建一个main包和一个main函数。在src目录下创建一个名为geometry的目录。
+ 然后在其中创建一个geometry.go文件。
+
+ 在geometry.go文件中，写入如下代码:
+
+ ```
+ //geometry.go
+ package main
+
+ import "fmt"
+
+ func main() {
+     fmt.Println("Geometrical shape properties")
+ }
+
+ ```
+ package main 这行代码指明了这个文件从属于main包。import "packagename" 语句用于引入一个
+ 已存在的包。本例中，我们引入的是fmt包，紧接着下面是一个打印Geometrical shape properties的main函数。
+
+ 输入go install  geometry  命令即可编译上述程序。该命令会在geometry目录下搜索包含main函数的文件。
+ 本例中，它找的就是geometry.go文件。之后，编译该文件并生成名为geometry的二进制文件，并把二进制文件放置到bin目录下。
+ 其目录结构将变为：
+
+ ```
+
+ src
+     geometry
+             gemometry.go
+ bin
+     geometry
+
+ ```
+我们只需要输入workspacepath/bin/geometry即可运行该程序。把workspacepath替换成你工作空间的
+路径。此命令会运行你bin目录下的geometry程序。你会得到Geometrical shape properties输出。
+
+
+
+## 创建自定义包
+
+我们下面把所有和矩形相关的功能都放置到rectangle包下。
+
+我们先创建rectangle包，这个包的功能就是计算矩形面积和对角线的长度。
+
+从属于同一个包的源文件应该被放置到单独的文件夹下，作为约定，我们通常把文件夹的名字和包名
+保持一致。
+
+
+故而，现在我们可以在geometry下面创建一个rectangle目录，rectangle目录下的所有文件都以
+package rectangle起始，以表明他们都从属于rectangle包。
+
+
+在rectangle目录下，创建一个rectprops.go文件，添加如下代码：
+
+```
+//rectprops.go
+package rectangle
+
+import "math"
+
+func Area(len, wid float64) float64 {
+    area := len * wid
+    return area
+}
+
+func Diagonal(len, wid float64) float64 {
+    diagonal := math.Sqrt((len * len) + (wid * wid))
+    return diagonal
+}
+
+```
+上面的代码中，我们创建了俩个函数Area和Diagonal。面积是长和宽的乘积。对角线是长和宽的平方根。
+math包下的Sqrt函数就是专门用于计算平方根的。
+
+
+## 引入自定义包
+
+ 要想使用自定义包，我们首先要导入它。import path 即是导入自定义包的语法。我们必须自定义包
+ 在src目录下的路径。我们当前的目录结构如下：
+
+```
+src
+   geometry
+           geometry.go
+           rectangle
+                    rectprops.go
+
+```
+
+import "geometry/rectangle"这行的作用就是导入rectangle包。把下面代码加入到geometry.go文件
+中：
+
+```
+//geometry.go
+package main
+
+import (
+    "fmt"
+    "geometry/rectangle" //importing custom package
+)
+
+func main() {
+    var rectLen, rectWidth float64 = 6, 7
+    fmt.Println("Geometrical shape properties")
+        /*Area function of rectangle package used
+        */
+    fmt.Printf("area of rectangle %.2f\n", rectangle.Area(rectLen, rectWidth))
+        /*Diagonal function of rectangle package used
+        */
+    fmt.Printf("diagonal of the rectangle %.2f ",rectangle.Diagonal(rectLen, rectWidth))
+}
+
+```
+上述代码引入了rectangle包，并且使用了它的Area和Diagonal方法。Printf中"%.2f"格式化符是用于保留俩位小数。
+应用将输出如下：
+
+```
+Geometrical shape properties
+area of rectangle 42.00
+diagonal of the rectangle 9.22
+
+```
+
+## 被导出的名称
+ 我们利用rectangle包里面的 Area和Diagonal函数。这在Go里面有着特殊的意义。
+ 在Go中，任何以大写字母开头的变量和函数都是被导出的名字。只有被导出的函数和变量才能在其他包中使用。
+ 本例中，我们就是在main包里面使用Area和Diagonal函数的。因此，他们都是大写的。
+
+ 如果rectprops.go 文件中的函数名由Area(len, wid float64) 变为 area(len, wid float64)  and
+  rectangle.Area(rectLen, rectWidth)变为rectangle.area(rectLen, rectWidth)，运行该程序，编译器
+  将抛出geometry.go:11: cannot refer to unexported name rectangle.area错误。因而，如果你想在包外访问
+  某个函数，那么你就应该把它的函数名称的首字母大写。
+
+
+
+## 初始化函数
+每个包都能包含一个init函数。这个函数没有任何的返回值类型和参数。init函数不能在代码中显式地调用。
+它就像这样：
+
+```
+func init() {
+
+}
+
+```
+init函数可以用于执行初始化任务，或者 在程序执行前校验其正确性。
+
+包的初始化顺序如下:
+
+```
+1、包级别的变量最先被初始化
+
+2、紧接着是执行初始化函数init。一个包可以有多个初始化函数，他们被调用的顺序与它们的编译顺序一致。
+
+
+```
+如果一个包引入了其他包，那么被引入的包先被初始化。
+
+即使在多个包中被引入多次，一个包也只能初始化一次。
+
+我们稍微改动下我们的程序，好理解一下初始化函数init。我们在rectprops.go文件中，添加一个
+init函数：
+
+```
+//rectprops.go
+package rectangle
+
+import "math"
+import "fmt"
+
+/*
+ * init function added
+ */
+func init() {
+    fmt.Println("rectangle package initialized")
+}
+func Area(len, wid float64) float64 {
+    area := len * wid
+    return area
+}
+
+func Diagonal(len, wid float64) float64 {
+    diagonal := math.Sqrt((len * len) + (wid * wid))
+    return diagonal
+}
+
+```
+我们添加了一个初始化函数init，它仅仅打印了一句话。
+
+现在我们修改一下main函数。我们都知道矩形的长和宽都应该大于零，那么我们可以在init函数中
+做下检查。同时在geometry.go文件中定义几个包级别的变量。
+
+修改后的geomerty.go文件，如下：
+
+```
+//geometry.go
+package main
+
+import (
+    "fmt"
+    "geometry/rectangle" //importing custom package
+    "log"
+)
+/*
+ * 1. package variables
+*/
+var rectLen, rectWidth float64 = 6, 7
+
+/*
+*2. init function to check if length and width are greater than zero
+*/
+func init() {
+    println("main package initialized")
+    if rectLen < 0 {
+        log.Fatal("length is less than zero")
+    }
+    if rectWidth < 0 {
+        log.Fatal("width is less than zero")
+    }
+}
+
+func main() {
+    fmt.Println("Geometrical shape properties")
+    fmt.Printf("area of rectangle %.2f\n", rectangle.Area(rectLen, rectWidth))
+    fmt.Printf("diagonal of the rectangle %.2f ",rectangle.Diagonal(rectLen, rectWidth))
+}
+
+```
+geometry.go的改动可以归结为如下几点：
+
+ 1、rectLen和rectWidth变量从main函数级别变动到包级别。
+
+ 2、init函数打印了一个日志，并且当rectLen 或 rectWidth小于零时终止程序的执行。
+
+
+main函数的初始化顺序如下:
+
+```
+  1、首先初始化被导入的包，故而，要先初始化 rectangle包
+
+  2、紧接着初始化包变量： rectLen和rectWidth变量
+
+  3、调用init函数
+
+  4、最后调用main函数
+
+```
+运行此程序，你会得到下面输出：
+
+```
+rectangle package initialized
+main package initialized
+Geometrical shape properties
+area of rectangle 42.00
+diagonal of the rectangle 9.22
+
+```
+我们再改动一下程序，学习一下如何使用init函数。
+
+把 var rectLen, rectWidth float64 = 6, 7改为：var rectLen, rectWidth float64 = -6, 7。
+现在再次运行程序，会看到：
+
+```
+rectangle package initialized
+main package initialized
+2017/04/04 00:28:20 length is less than zero
+
+```
+和通常一样，rectangle包首先被初始化，然后是main包里面的 rectLen和rectWidth变量。rectLen为负数，
+因此当init函数执行时，程序就会终止，并打印：length is less than zero。
+
+上述代码都可在 gitlab上下载到： [github地址](https://github.com/golangbot/geometry)
+
+
+## 空格符的使用
+ 引入一个包而不在程序中使用它，对Go来说是非法的。编译器会报错。之所以这样做，就是为了
+ 避免由于未使用的包而导致的代码臃肿，进而导致编译时间的急剧增长。
+
+ ```
+ //geometry.go
+ package main
+
+ import (
+
+      "geometry/rectangle" //importing custom package
+
+ )
+ func main() {
+
+ }
+
+ ```
+
+ 上面的程序，会抛出： geometry.go:6: imported and not used: "geometry/rectangle"。
+
+ 如果我们想先引入一个包，然后在之后使用的话，我们可以用"_"空格符来做到这一点。
+
+ ```
+ package main
+
+ import (
+     "geometry/rectangle"
+ )
+
+ var _ = rectangle.Area //error silencer
+
+ func main() {
+
+ }
+ ```
+ var _ = rectangle.Area这行代码会屏蔽错误。我们应该记住在哪些地方使用到"_"，如果包最终没被使用
+ 过，我们要在程序开发完成后，把它们从代码中移除。因而，比较推荐的是在import语句之后，写error silencer.
+
+ 不过，有些场景可能是这样的，我们引入一个包，仅仅是为了确保它里面的初始化函数的执行，实际上我们并不使用包
+ 里面的函数或变量。例如：即使我们不使用rectangle包，我们也想让rectangle包下的init函数执行。这样的话，
+ 就可以使用"_"空格符。
+
+ ```
+ package main
+
+ import (
+
+      _ "geometry/rectangle"
+
+ )
+ func main() {
+
+ }
+
+ ```
+运行上面的程序，将会输出： rectangle package initialized。我们已经成功了初始化了rectangle包，
+尽管我们并没有在代码中实际用到rectangle包。以上就是关于package的内容。
+
+
+## 致谢
+感谢您阅读本文。如果有任何反馈和问题，请您在评论区留言。
+
+***备注***
+
+ 本文系翻译之作[原文博客地址](https://golangbot.com/packages/)
