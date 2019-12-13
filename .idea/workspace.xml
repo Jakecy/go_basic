@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2deabaae-d3f9-4090-8a9a-5683f647a9e7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/geometry/geometry.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/geometry/rectangle/rectprops.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/array/ArraySlice.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/go_build_varMain_go.exe" beforeDir="false" afterPath="$PROJECT_DIR$/bin/go_build_varMain_go.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/h/CalculateSumFactor.go" beforeDir="false" afterPath="$PROJECT_DIR$/a_doc/old_code/CalculateSumFactor.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/h/hello.go" beforeDir="false" afterPath="$PROJECT_DIR$/a_doc/old_code/hello.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/h/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/a_doc/old_code/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/h/webMain.go" beforeDir="false" afterPath="$PROJECT_DIR$/a_doc/old_code/webMain.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/varMain.go" beforeDir="false" afterPath="$PROJECT_DIR$/a_doc/old_code/varMain.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,13 +16,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/a_doc/old_code/varMain.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
+            <state relative-caret-position="817">
               <caret line="45" selection-start-line="45" selection-end-line="45" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/geometry/geometry.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="323">
@@ -41,34 +34,20 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/array/ArraySlice.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="76">
+              <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/geometry/rectangle/rectprops.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="17" selection-start-column="17" selection-end-column="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/a_doc/Go教程第五篇常量">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/a_doc/Go教程第二篇helloworld">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="11" column="9" selection-start-line="11" selection-start-column="9" selection-end-line="11" selection-end-column="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/a_doc/Go教程第四篇类型">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="17" selection-start-line="17" selection-end-line="17" />
+            <state relative-caret-position="228">
+              <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -115,8 +94,9 @@
         <option value="$PROJECT_DIR$/src/main/hello.go" />
         <option value="$PROJECT_DIR$/src/main/varMain.go" />
         <option value="$PROJECT_DIR$/a_doc/old_code/varMain.go" />
-        <option value="$PROJECT_DIR$/src/geometry/rectangle/rectprops.go" />
         <option value="$PROJECT_DIR$/src/geometry/geometry.go" />
+        <option value="$PROJECT_DIR$/src/geometry/rectangle/rectprops.go" />
+        <option value="$PROJECT_DIR$/src/array/ArraySlice.go" />
       </list>
     </option>
   </component>
@@ -131,6 +111,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -157,6 +138,12 @@
               <item name="go_basic" type="b2602c69:ProjectViewProjectNode" />
               <item name="go_basic" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="array" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="go_basic" type="b2602c69:ProjectViewProjectNode" />
+              <item name="go_basic" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="geometry" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -170,7 +157,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -215,13 +201,23 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build varMain.go">
+  <component name="RunManager" selected="Go Build.go build ArraySlice.go">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go_basic" />
       <working_directory value="$PROJECT_DIR$/src" />
       <go_parameters value="-i" />
       <kind value="PACKAGE" />
       <filePath value="$PROJECT_DIR$/" />
+      <package value="main" />
+      <directory value="$PROJECT_DIR$/" />
+      <output_directory value="$PROJECT_DIR$/bin" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build ArraySlice.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="go_basic" />
+      <working_directory value="$PROJECT_DIR$/src" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/src/array/ArraySlice.go" />
       <package value="main" />
       <directory value="$PROJECT_DIR$/" />
       <output_directory value="$PROJECT_DIR$/bin" />
@@ -269,6 +265,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build ArraySlice.go" />
         <item itemvalue="Go Build.go build varMain.go" />
         <item itemvalue="Go Build.go build CalculateSumFactor.go" />
         <item itemvalue="Go Build.go build webMain.go" />
@@ -280,12 +277,12 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24798928" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25134048" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49798927" weight="0.3186969" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49731904" visible="true" weight="0.31728044" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -293,8 +290,8 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49932975" visible="true" weight="0.3286119" />
-      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50067025" side_tool="true" visible="true" weight="0.3286119" />
+      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49865952" weight="0.3286119" />
+      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50268096" side_tool="true" visible="true" weight="0.31728044" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -316,7 +313,9 @@
     <MESSAGE value="变量声明-完结" />
     <MESSAGE value="Go-数据类型-博客文章" />
     <MESSAGE value="Go-常量" />
-    <option name="LAST_COMMIT_MESSAGE" value="Go-常量" />
+    <MESSAGE value="如何引入自定义包" />
+    <MESSAGE value="Go教程第七篇: 包" />
+    <option name="LAST_COMMIT_MESSAGE" value="Go教程第七篇: 包" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main.go" />
@@ -364,10 +363,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/a_doc/old_code/varMain.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
+        <state relative-caret-position="817">
           <caret line="45" selection-start-line="45" selection-end-line="45" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/a_doc/Go教程第七篇包">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/a_doc/Go教程第六篇函数">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/a_doc/Go教程第五篇常量">
       <provider selected="true" editor-type-id="text-editor" />
@@ -395,8 +400,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/geometry/rectangle/rectprops.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="17" selection-start-column="17" selection-end-column="17" />
+        <state relative-caret-position="228">
+          <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -407,6 +412,13 @@
           <folding>
             <element signature="e#28#94#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/array/ArraySlice.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
         </state>
       </provider>
     </entry>
