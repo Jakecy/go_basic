@@ -5,7 +5,14 @@ import "fmt"
 func main() {
 	//declare1()
 	//以short hand创建数组并赋值
-	declareArrayUsingShortHand()
+	//declareArrayUsingShortHand()
+	//使用三个点...创建消息
+	declareArrayUsing3Dots()
+}
+
+func declareArrayUsing3Dots() {
+	a := [...]int{12, 18, 19}
+	fmt.Println(a)
 }
 
 func declareArrayUsingShortHand() {
