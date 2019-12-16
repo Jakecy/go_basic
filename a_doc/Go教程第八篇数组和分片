@@ -1,0 +1,728 @@
+
+# Array和Slice
+
+ 欢迎来到《Golang系列教程》的第八篇，在这篇教程中，我们将处理Go中的Array和Slice。
+
+
+## Array
+
+数组是同一类型的元素的集合，比如，5,8,9,79,76是一组整型，他们就可以组成一个数组。在Go中不同类型的值不允许
+放入到同一个数组中。
+
+### 数组声明
+ 数组声明:
+ >  [n]T
+ n表明了数组元素的个数，T表明的是元素的数据类型。另外，元素个数n也是类型的一部分(这点我们会在稍后讲解)。
+ Go提供了多种声明数组的方式，我们来一个个看下。
+
+ ```
+ package main
+
+ import (
+     "fmt"
+ )
+
+
+ func main() {
+     var a [3]int //int array with length 3
+     fmt.Println(a)
+ }
+
+ ```
+ var a[3]int 包含了一个含有3个整数的数组。数组中的所有元素的值都会自动地被初始化该数组类型所对应的零值zero value。
+ 在本例中，a是一个整型数组，因此a的所有元素都会被初始化为0值，0即int类型的零值。运行上面的程序，得到的输出结果是：
+ [0 0 0]
+
+
+ 数组的角标是从：0到length-1。我们可以给上述数组分配一些值：
+
+ ```
+ package main
+import (
+    "fmt"
+)
+
+func main() {
+    var a [3]int //int array with length 3
+    a[0] = 12 // array index starts at 0
+    a[1] = 78
+    a[2] = 50
+    fmt.Println(a)
+}
+
+ ```
+上面的程序会输出：[12 78  50]。
+
+我们还可以以一种快捷的方式创建该数组：
+
+```
+package main
+import (
+    "fmt"
+)
+func main() {
+    a := [3]int{12, 78, 50} // short hand declaration to create array
+    fmt.Println(a)
+}
+```
+程序的输出还是：[12 78  50]。
+
+在快捷方式中，不是所有的元素都要指定一个值：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    a := [3]int{12}
+    fmt.Println(a)
+}
+```
+
+在上面程序的第八行  a:=[3]int{12},声明了一个长度为3的数组，但是只提供了一个值12。剩下的2个元素并没有赋值，
+而是交由编译器自动初始化为0。程序的输出结果为：[12 0 0]。
+
+你甚至可以在声明时忽略数组的长度，使用...代替。这时，编译器会自动帮你判断出长度。
+
+```
+package main
+import (
+    "fmt"
+)
+
+func main() {
+    a := [...]int{12, 78, 50} // ... makes the compiler determine the length
+    fmt.Println(a)
+}
+
+```
+数组长度的大小也是数组类型的一部分。因此，[5]int 和[25]int 是俩个不同的数组类型。
+正是因为这，数组的大小不能改变。不过，你也不用担心，因为，slice会解决这个问题。
+
+```
+package main
+
+func main() {
+    a := [3]int{5, 78, 8}
+    var b [5]int
+    b = a //not possible since [3]int and [5]int are distinct types
+}
+
+```
+程序的第6行，当我们试图把一个[3]int 类型的变量赋值给一个int[5]类型的变量时，就不会编译通过。
+此时，编译器会抛出一个错误： main.go:6: cannot use a (type [3]int) as type [5]int in assignment.
+
+
+### 数组是值类型
+
+Go里面的数组是值类型而非引用类型，这意味着，当他们被赋值给一个新变量的时候，会把原始的数组拷贝给新变量。
+如果对新变量做出修改，不会影响到原来的数组。
+
+```
+package main
+
+import "fmt"
+
+func main() {
+    a := [...]string{"USA", "China", "India", "Germany", "France"}
+    b := a // a copy of a is assigned to b
+    b[0] = "Singapore"
+    fmt.Println("a is ", a)
+    fmt.Println("b is ", b)
+}
+
+```
+
+在上面程序的第七行，会把a拷贝给b。在第八行，又把数组b的第一个元素置为"Singapore"。这不会影响到数组a。
+程序将输出：
+
+```
+a is [USA China India Germany France]
+b is [Singapore China India Germany France]
+
+```
+
+同样地，当把数组作为参数传递给函数时，他们实际传递的也是值，原来的数组不会受到影响。
+
+```
+package main
+
+import "fmt"
+
+func changeLocal(num [5]int) {
+    num[0] = 55
+    fmt.Println("inside function ", num)
+
+}
+func main() {
+    num := [...]int{5, 6, 7, 8, 8}
+    fmt.Println("before passing to function ", num)
+    changeLocal(num) //num is passed by value
+    fmt.Println("after passing to function ", num)
+}
+
+```
+在上面程序的第13行，数组num实际是以值的形式传递给函数changeLocal()，因此这不会因函数的调用
+而受到影响。该程序会输出：
+
+```
+before passing to function  [5 6 7 8 8]
+inside function  [55 6 7 8 8]
+after passing to function  [5 6 7 8 8]
+
+```
+
+### 数组长度
+
+ 把数组作为参数传递给len函数，即可获得数组的长度。
+
+ ```
+ package main
+
+ import "fmt"
+
+ func main() {
+     a := [...]float64{67.7, 89.8, 21, 78}
+     fmt.Println("length of a is",len(a))
+
+ }
+
+ ```
+ 上述程序的输出结果是： length of a is 4
+
+### 使用角标遍历数组
+
+for循环可用于遍历数组：
+
+```
+package main
+
+import "fmt"
+
+func main() {
+    a := [...]float64{67.7, 89.8, 21, 78}
+    for i := 0; i < len(a); i++ { //looping from 0 to the length of the array
+        fmt.Printf("%d th element of a is %.2f\n", i, a[i])
+    }
+}
+
+```
+上面的程序使用for循环来遍历这个数组，角标从0到length-1。程序将会输出如下：
+
+```
+0 th element of a is 67.70
+1 th element of a is 89.80
+2 th element of a is 21.00
+3 th element of a is 78.00
+
+```
+
+Go提供了一个更好更简洁的方式迭代数组，那就是使用range。range会把角标和元素都返回来。
+我们来用range重写上面的代码，计算出所有元素之和：
+
+```
+package main
+
+import "fmt"
+
+func main() {
+    a := [...]float64{67.7, 89.8, 21, 78}
+    sum := float64(0)
+    for i, v := range a {//range returns both the index and value
+        fmt.Printf("%d the element of a is %.2f\n", i, v)
+        sum += v
+    }
+    fmt.Println("\nsum of all elements of a",sum)
+}
+
+```
+在第八行，for  i,v:=range a 就是使用range方式来遍历数组a。range会返回index和value。
+我们把值打印出来，并计算数组a中的元素的和。程序的输出如下：
+
+```
+0 the element of a is 67.70
+1 the element of a is 89.80
+2 the element of a is 21.00
+3 the element of a is 78.00
+
+sum of all elements of a 256.5
+
+```
+如果在某些情况下，你不想要index的话，你可以用"——"来代替：
+
+```
+for _, v := range a { //ignores index
+}
+
+```
+上面的遍历会忽略index。类似地，value像这样忽略。
+
+
+
+
+
+### 多维数组
+我们上面创建的都是一些一维数组。创建多维数组的话，可以这样:
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func printarray(a [3][2]string) {
+    for _, v1 := range a {
+        for _, v2 := range v1 {
+            fmt.Printf("%s ", v2)
+        }
+        fmt.Printf("\n")
+    }
+}
+
+func main() {
+    a := [3][2]string{
+        {"lion", "tiger"},
+        {"cat", "dog"},
+        {"pigeon", "peacock"}, //this comma is necessary. The compiler will complain if you omit this comma
+    }
+    printarray(a)
+    var b [3][2]string
+    b[0][0] = "apple"
+    b[0][1] = "samsung"
+    b[1][0] = "microsoft"
+    b[1][1] = "google"
+    b[2][0] = "AT&T"
+    b[2][1] = "T-Mobile"
+    fmt.Printf("\n")
+    printarray(b)
+}
+
+```
+在上述程序的第17行，我们声明了一个2维的字符串数组。第二行中的,号是必须的。因为语法分析区，
+会自动地根据简单的规则插入分号。如果你有兴趣了解更多的话，可以阅读：[semicolon](https://golang.org/doc/effective_go.html#semicolons)。
+
+在第23行，又声明了第二个2维数组b，这个数组的元素是根据索引一个个添加的。这也是一种初始化二维数组的方法。
+
+第7行的主函数使用俩个range来遍历，从而打印出2维数组的内容。程序会输出如下：
+
+```
+lion tiger
+cat dog
+pigeon peacock
+
+apple samsung
+microsoft google
+AT&T T-Mobile
+
+```
+以上这些就是关于数组的知识，数组虽然看起来很灵活，但他们的限制就是他们都是固定长度。你没办法
+改变数组的长度。这时，slice就进入到了我们的视野了。事实上,对Go来说，slice比传统的数组更
+通用。
+
+
+
+
+## Slice
+slice是在数组基础上构建出来的一个方便的、灵活的、强大的包装类。slice本身不存储任何数据，
+他们仅仅是对已有数组的引用。
+
+### 创建一个分片
+ 语法：
+ >  []T
+
+ T是slice的元素类型。
+
+ ```
+ package main
+
+ import (
+     "fmt"
+ )
+
+ func main() {
+     a := [5]int{76, 77, 78, 79, 80}
+     var b []int = a[1:4] //creates a slice from a[1] to a[3]
+     fmt.Println(b)
+ }
+
+ ```
+ a[start:end]这个语法，会从数组a的角标start到end-1里创建一个slice。因此，在上述程序
+ 的第9行a[1,4]会创建一个代表数组a的第1个元素到第3个元素的slice。因此，slice b 的值为：
+ [77,78,79]。
+
+
+ 我们再看一种创建slice的方式：
+
+ ```
+ package main
+
+ import (
+     "fmt"
+ )
+
+ func main() {
+     c := []int{6, 7, 8} //creates and array and returns a slice reference
+     fmt.Println(c)
+ }
+
+ ```
+ 上面这个程序的第九行，c:=[]int{6,7,8}会创建一个含有3个元素的数组，同时返回一个slice引用
+ 并把其赋值给变量c。
+
+
+
+
+### 修改slice
+
+slice自己并不存储数据。它仅仅是底层数组的一个表示。对slice的任何修改都会影响到底层的数组。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    darr := [...]int{57, 89, 90, 82, 100, 78, 67, 69, 59}
+    dslice := darr[2:5]
+    fmt.Println("array before",darr)
+    for i := range dslice {
+        dslice[i]++
+    }
+    fmt.Println("array after",darr)
+}
+```
+上述程序的第9行，我们从数组darr的脚标2,3,4里创建了一个的dslice。for循环会把脚标内的值
+加一。在for循环之后，我们把数组打印出来，程序的输出结果，就如下展示：
+
+```
+array before [57 89 90 82 100 78 67 69 59]
+array after [57 89 91 83 101 78 67 69 59]
+
+```
+
+当有多个slice共享一个底层数组时，每一个slice做出的改变都将影响到底层的数组。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    numa := [3]int{78, 79 ,80}
+    nums1 := numa[:] //creates a slice which contains all elements of the array
+    nums2 := numa[:]
+    fmt.Println("array before change 1",numa)
+    nums1[0] = 100
+    fmt.Println("array after modification to slice nums1", numa)
+    nums2[1] = 101
+    fmt.Println("array after modification to slice nums2", numa)
+}
+
+```
+在第9行，numa[:]由于没有指定起始脚标和终止脚标，它默认会认起始脚标为0，终止脚标为len(numa)。
+nums1和nums2由于共享同一个数组，所以程序的输出如下：
+
+```
+array before change 1 [78 79 80]
+array after modification to slice nums1 [100 79 80]
+array after modification to slice nums2 [100 101 80]
+
+```
+从输出结果可以看出，当多个slice共享同一个底层数组时，每一个slice的改变都将影响到
+底层数组。
+
+#### slice的长度和容量
+
+slice的长度是其中的元素个数。slice的容量为其底层数组从slice的开始脚标开始一直到数组最后一个脚本
+为止的所有元素个数。
+
+我们一起写段代码理解：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    fruitarray := [...]string{"apple", "orange", "grape", "mango", "water melon", "pine apple", "chikoo"}
+    fruitslice := fruitarray[1:3]
+    fmt.Printf("length of slice %d capacity %d", len(fruitslice), cap(fruitslice)) //length of fruitslice is 2 and capacity is 6
+}
+
+```
+在上面的程序中，fruitslice是从数组fruitarray的脚标1到脚本2开始创建。因此，fruitslice的长度是2。
+
+fruitarray的长度是7。因为fruitslice是从脚标1开始处创建，所以fruitslice的容量即是从fruitarray中除去
+第一个元素之外的所有，本例中，即是： 从"orange"开始，一直到"chikoo"。所以fruitslice的容量为：6。
+
+
+在对slice再次切分时一定要切到它的容量处，。除此之外的任何情况都会抛出一个运行期错误:
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    fruitarray := [...]string{"apple", "orange", "grape", "mango", "water melon", "pine apple", "chikoo"}
+    fruitslice := fruitarray[1:3]
+    fmt.Printf("length of slice %d capacity %d\n", len(fruitslice), cap(fruitslice)) //length of is 2 and capacity is 6
+    fruitslice = fruitslice[:cap(fruitslice)] //re-slicing furitslice till its capacity
+    fmt.Println("After re-slicing length is",len(fruitslice), "and capacity is",cap(fruitslice))
+}
+
+```
+在上述程序的第11行，fruitslice被再次切分至它的容量。上述程序会输出：
+
+```
+length of slice 2 capacity 6
+After re-slicing length is 6 and capacity is 6
+
+```
+
+### 使用make创建slice
+
+  func make([]T,len,cap) 可以用来创建slice，接收三个参数： type, length,capacity。
+  capacity参数是可选的，如果不传的话，默认值为数组长度。make函数会创建一个array，并返回
+  一个指向它的slice。
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    i := make([]int, 5, 5)
+    fmt.Println(i)
+}
+
+```
+使用make创建的slice，元素的默认值为0。上述的程序会输出结果如下：[0 0 0 0 0].
+
+
+### 向slice中添加内容
+
+我们都知道数组的长度都是固定的，不能增加。而slice是动态的，新元素可以使用append函数被追加到slice中。
+append的函数定义是：func append(s []T, x ...T) []T。
+
+X...T表示的是： 该函数可以接收多个参数X。这种类型的函数被称为：可变函数。
+
+你可以在心里会有这样一个疑问，既然slice的内部机制是由底层的数组所支持的，而数组的长度是固定的。
+那么为何slice的长度是可变的呢？ 其实底层是这样的，当一个元素被追加到slice中时，是再次创建一个新
+数组，原有数组里面的元素被会copy到新数组中，同时返回一个指向新数组的slice。此时，新slice的容量
+为老slice容量的二倍，是不是很神奇？下面的程序将会帮你看清这一点：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    cars := []string{"Ferrari", "Honda", "Ford"}
+    fmt.Println("cars:", cars, "has old length", len(cars), "and capacity", cap(cars)) //capacity of cars is 3
+    cars = append(cars, "Toyota")
+    fmt.Println("cars:", cars, "has new length", len(cars), "and capacity", cap(cars)) //capacity of cars is doubled to 6
+}
+
+```
+上面程序中，cars的初始容量是3。我们追加了一个元素到cars中去之后，此时cars的容量编程了原来的二倍，变成了6.
+程序输出如下：
+
+```
+
+cars: [Ferrari Honda Ford] has old length 3 and capacity 3
+cars: [Ferrari Honda Ford Toyota] has new length 4 and capacity 6
+
+```
+slice 类型的零值是nil。值为nil的slice其长度和容量都是0。我们可以向值为nil的slice中追加元素：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func main() {
+    var names []string //zero value of a slice is nil
+    if names == nil {
+        fmt.Println("slice is nil going to append")
+        names = append(names, "John", "Sebastian", "Vinay")
+        fmt.Println("names contents:",names)
+    }
+}
+
+```
+在上面的程序中name的值nil。我们向其中追加了3个元素，程序将输出如下：
+
+```
+slice is nil going to append
+names contents: [John Sebastian Vinay]
+
+```
+
+使用...运算符可以把一个slice追加到另一个slice中：
+
+```
+func main() {
+    veggies := []string{"potatoes","tomatoes","brinjal"}
+    fruits := []string{"oranges","apples"}
+    food := append(veggies, fruits...)
+    fmt.Println("food:",food)
+}
+
+```
+上面程序的第10行，我们把fruits追加到veggies并返回一个food。上述程序的输出如下：
+food: [potatoes tomatoes brinjal oranges apples]
+
+
+
+### slice作为参数传递
+
+你可以认为slice代表的是一个结构类：
+
+```
+type slice struct {
+    Length        int
+    Capacity      int
+    ZerothElement *byte
+}
+
+```
+slice含有三个部分： 长度、容量、指向零值元素的数组。当把一个slice传递给函数之后，
+虽然它是值传递，但是指针变量将指向同一个底层数组。因此当slice作为参数传递给函数之后，
+在函数内部对此slice做出的修改，在此函数的外部也是可见的。我们可以写个程序检查一下：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func subtactOne(numbers []int) {
+    for i := range numbers {
+        numbers[i] -= 2
+    }
+
+}
+func main() {
+    nos := []int{8, 7, 6}
+    fmt.Println("slice before function call", nos)
+    subtactOne(nos)                               //function modifies the slice
+    fmt.Println("slice after function call", nos) //modifications are visible outside
+}
+
+```
+在17行的函数调用，会把slice里面的每个元素减2。函数调用完成之后，再次打印slice，你可以清楚地
+看到这些变化。如果你把一个数组传递函数，然后在函数内部对此数组进行的修改，在该函数外部则不可见。
+
+```
+slice before function call [8 7 6]
+slice after function call [6 5 4]
+
+```
+
+
+
+
+### 多维slice
+类似于数组，slice也可以有多维。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+
+func main() {
+     pls := [][]string {
+            {"C", "C++"},
+            {"JavaScript"},
+            {"Go", "Rust"},
+            }
+    for _, v1 := range pls {
+        for _, v2 := range v1 {
+            fmt.Printf("%s ", v2)
+        }
+        fmt.Printf("\n")
+    }
+}
+
+```
+程序的输出如下：
+
+```
+
+C C++
+JavaScript
+Go Rust
+
+```
+
+
+### 内存优化
+
+由于slice持有了一个指向底层数组的引用。所以，只要slice在内存中，数组就不能给垃圾回收。
+现在假定我们有个非常大的数组，而我们只关注于处理其中的一小部分。之后，我们从此数组里面
+创建一个slice，然后处理该slice。有点至关重要，只要slice还在引用它，它就得一直存在于内存中。
+
+解决这个问题的方法就是使用copy函数 func  copy(dst,scr []T) int 。这样的话，我们就可以使用
+新的slice，而原始的数组就可以被垃圾回收了。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func countries() []string {
+    countries := []string{"USA", "Singapore", "Germany", "India", "Australia"}
+    neededCountries := countries[:len(countries)-2]
+    countriesCpy := make([]string, len(neededCountries))
+    copy(countriesCpy, neededCountries) //copies neededCountries to countriesCpy
+    return countriesCpy
+}
+func main() {
+    countriesNeeded := countries()
+    fmt.Println(countriesNeeded)
+}
+
+```
+在上述程序的第9行，neededCountries :=countries[:len(countries)-2]从countries中创建出
+一个slice。程序的第11行，把neededCountries拷贝到countriesCpy中，并且在函数的最后一行把其返回。
+现在countries数组就可以被垃圾回收了，因为neededCountries不再被引用了。
+
+
+到目前为止 我已经在单个程序中汇总了所有的概念，你可以从github上下载到。[github](https://github.com/golangbot/arraysandslices)
+以上就是关于array和slice的全部内容，感谢阅读，请留下您珍贵的反馈和评论。
+
+
+
+
+
+
+## 致谢
+感谢您阅读本文。如果有任何反馈和问题，请您在评论区留言。
+
+***备注***
+
+ 本文系翻译之作[原文博客地址](https://golangbot.com/arrays-and-slices/)

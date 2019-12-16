@@ -1,0 +1,341 @@
+
+# 可变参数函数
+
+欢迎来到《Golang系列教程》的第九篇文章---可变参数函数。
+
+
+## 什么是可变参数函数 ？
+  通常情况下，函数只接受固定长度的实参作为参数。而 可变参数函数(a variadic function) 可以接收不定数量的实参。
+  如果最后一个参数的前缀是三个省略号"..."，那么对于对那个参数而言，这个函数就可以接收任意数量的实参。
+
+  ***只有函数的最后一个参数可以是可变的。我们将在这篇文章的下一部分中学习到这究竟是为什么。***
+
+
+## Syntax语法
+
+```
+
+  func  hello(a int,b ... int){
+
+  }
+
+```
+在上面的函数中，参数b是可变的，因为它有前缀"..."。所以参数b可以接收任意数量的实参。该函数
+可以用下面这样的语法调用：
+
+```
+hello(1, 2) //passing one argument "2" to b
+hello(5, 6, 7, 8, 9) //passing arguments "6, 7, 8 and 9" to b
+
+```
+在上面这个代码片中，第一行我们调用了hello()函数并把2传递给参数b。在第二行代码中，我们把6,7,8,9这四个实参传递给
+参数b。
+
+对于一个可变参数函数，我们也可以不传参数。
+```
+hello(1)
+
+```
+在上面的代码中，我们调用了hello函数，并且没有给b传递任何实参。
+
+我想现在你或许明白了，为什么只有函数的最后一个参数可以作为可变参数了。
+
+如果我们让hello()函数的第一个参数作为可变参数的话，那么语法结构将会是下面的这样：
+
+```
+func hello(b ...int, a int) {
+
+}
+
+```
+对于上面的函数，无法将一个实参传递给a,因为此函数的第一个参数b是可变参数，所以我们传递过去的值都会被b接收。
+故而，可变参数只能是函数的最后一个参数。上面的函数编译器也会报错：syntax error: cannot use ... with non-final parameter b。
+
+
+
+## 案例以及理解可变参数函数的工作原理
+
+我们创建一个自己的可变参数函数。我们写一个程序，判断在传递的多个整数参数中，某个整型数是否存在。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func find(num int, nums ...int) {
+    fmt.Printf("type of nums is %T\n", nums)
+    found := false
+    for i, v := range nums {
+        if v == num {
+            fmt.Println(num, "found at index", i, "in", nums)
+            found = true
+        }
+    }
+    if !found {
+        fmt.Println(num, "not found in ", nums)
+    }
+    fmt.Printf("\n")
+}
+func main() {
+    find(89, 89, 90, 95)
+    find(45, 56, 67, 45, 90, 109)
+    find(78, 38, 56, 98)
+    find(87)
+}
+
+```
+在上面的程序中，第七行的 func find(num int,nums ...int) 的nums形参可以接收多个实参。
+在find函数的内部，nums的数据类型是[]int，比如：整型的slice。
+
+程序的输出结果如下：
+
+```
+type of nums is []int
+89 found at index 0 in [89 90 95]
+
+type of nums is []int
+45 found at index 2 in [56 67 45 90 109]
+
+type of nums is []int
+78 not found in  [38 56 98]
+
+type of nums is []int
+87 not found in  []
+
+```
+在上面程序的第25行 find(87)，find的函数调用只传递一个实参。我们并没有传递任何实参给nums... int。正如
+之前讨论过的，这样做完全是合法的。在本例中，nums将会是一个nil slice，其长度和容量都是0。
+
+
+
+
+
+## Slice实参  VS  Variadic实参
+
+你的心里肯定逗留着这样一个疑问。在上面的章节中，我们已经了解到一个函数的可变参数实际上是被转换成了
+一个slice。那么，为什么我们还需要可变参数函数呢，我们直接使用slice实现相同的功能不就行了吗？下面
+我会用slice重写上述程序：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func find(num int, nums []int) {
+    fmt.Printf("type of nums is %T\n", nums)
+    found := false
+    for i, v := range nums {
+        if v == num {
+            fmt.Println(num, "found at index", i, "in", nums)
+            found = true
+        }
+    }
+    if !found {
+        fmt.Println(num, "not found in ", nums)
+    }
+    fmt.Printf("\n")
+}
+func main() {
+    find(89, []int{89, 90, 95})
+    find(45, []int{56, 67, 45, 90, 109})
+    find(78, []int{38, 56, 98})
+    find(87, []int{})
+}
+
+```
+
+从上面的程序，我们或许可以看出相比于使用slice，可变参数函数能带来哪些好处：
+
+
+. 1
+  减少了每次函数调用都需要创建slice的麻烦，如果你查看上面的程序，你就可以看到
+  在第22行，23行，24行，25行，这样每次的函数调用，我们都需要创建一个新的slice。
+  而使用可变参数函数就可以避免slice的创建，从而简化代码的开发。
+
+. 2
+ 在上述程序的第25行即：find(87, []int{})，我们创建了一个空数组，就是为了满足find的函数定义。这在
+ 可变参数函数中完全是不必的。当使用可变参数函数时，我们只需要写个find(87)就行了。
+
+
+. 3
+  在我个人看来，使用可变参数的程序相对于使用slice的程序来说，可读性更强。
+
+
+
+
+
+
+## Append是一个可变参数函数
+
+你曾经想过没有，当使用append函数向一个slice中追加值时，为什么append函数可以接收任意数目的实参。
+这是因为，append函数其实是一个可变函数：
+
+```
+func append(slice []Type, elems ...Type) []Type
+```
+上面就是append函数的定义。在此定义中，elems是一个可变参数。因此append可以接收任意多个实参。
+
+
+
+## 传递slice给可变参数函数
+
+把slice传递给一个可变参数函数，弄明白下面的程序究竟发生了些什么事。
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func find(num int, nums ...int) {
+    fmt.Printf("type of nums is %T\n", nums)
+    found := false
+    for i, v := range nums {
+        if v == num {
+            fmt.Println(num, "found at index", i, "in", nums)
+            found = true
+        }
+    }
+    if !found {
+        fmt.Println(num, "not found in ", nums)
+    }
+    fmt.Printf("\n")
+}
+func main() {
+    nums := []int{89, 90, 95}
+    find(89, nums)
+}
+
+```
+在程序的第23行find(89, nums)，我们把一个slice传递给了一个可以接收任意多个实参的函数。
+这是程序将是不合法的，在编译时会报错：./prog.go:23:10: cannot use nums (type []int) as type int in argument to find。
+
+为什么不能这样做呢？？？ 好吧，我们继续往下深入。find函数的声明是这样的：
+
+```
+func find(num int, nums ...int)
+
+```
+根据可变函数的定义，nums ... int 意味着，它可以接收多个int类型的实参。
+
+在程序的第23行，nums是作为[]int的slice被传递给find函数。而find函数是期望接收可变的int实参，我们之前讨论过，
+这些可变的实参将会被转换成int类型的slice。在本例中nums已经是一个[]int的slice了。当编译器试图创建一个新的[]int时，
+例如编译器试图这样做时：
+
+```
+find(89, []int{nums})
+
+```
+即： 当你试图把nums放入find函数新建的[]int中，让它作为其中的元素时，将会失败，因为nums是一个[]int而非int。
+那么，到底有没有一种方式可以把一个slice传递给可变参数函数呢？ 答案是：yes。
+
+有一个语法糖，可以把一个slice传递给可变参数函数。你必须给slice后缀省略号"..."，这样做的话，slice就会被直接传递个函数
+而函数也不必新建一个slice。
+
+如果你把上述程序中的find(89,nums)使用find(89,nums...)替换的话，程序就可以编译通过，输出如下：
+
+```
+type of nums is []int
+89 found at index 0 in [89 90 95]
+
+```
+
+完整的程序是：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func find(num int, nums ...int) {
+    fmt.Printf("type of nums is %T\n", nums)
+    found := false
+    for i, v := range nums {
+        if v == num {
+            fmt.Println(num, "found at index", i, "in", nums)
+            found = true
+        }
+    }
+    if !found {
+        fmt.Println(num, "not found in ", nums)
+    }
+    fmt.Printf("\n")
+}
+func main() {
+    nums := []int{89, 90, 95}
+    find(89, nums...)
+}
+
+```
+
+
+
+## Gotcha
+
+当你在一个可变参数函数的内部修改slice时，一定要清楚你到底做了什么。我们来看一个例子：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func change(s ...string) {
+    s[0] = "Go"
+}
+
+func main() {
+    welcome := []string{"hello", "world"}
+    change(welcome...)
+    fmt.Println(welcome)
+}
+
+```
+你认为上面程序的输出结果是什么？ 如果你认为是[Go world]的话，那么，恭喜你，你已经理解了可变参数函数
+和slice。如果你猜错了的话，也不是什么大问题，我们给你解释一下，这是为什么。
+
+在程序的第13行 change(welcome...)，我们使用了语法糖"..."，把一个slice作为change函数的实参传递给了可变参数函数。
+
+我们之前已经讨论过，如果使用了"..."的话，程序会把welcome这个slice传递给函数，而函数此时也不会创建一个新的slice。
+因此，welcome是作为实参被传递给了change函数。在这个change函数内部，slice的第一个元素被改变为"Go"。因此，程序将输出如下：
+
+```
+[Go world]
+```
+这里还有一个程序帮助你理解可变参数函数：
+
+```
+package main
+
+import (
+    "fmt"
+)
+
+func change(s ...string) {
+    s[0] = "Go"
+    s = append(s, "playground")
+    fmt.Println(s)
+}
+
+func main() {
+    welcome := []string{"hello", "world"}
+    change(welcome...)
+    fmt.Println(welcome)
+}
+
+```
+我把这个程序当做练习留个你，以帮助你理解上面程序的工作原理。
+
+以上就是可变参数函数的全部内容，感谢您的阅读，请留下您珍贵的反馈和评论。Have a good Day!
+
+
+***备注***
+ 本文系翻译之作[原文博客地址](https://golangbot.com/variadic-functions/)
